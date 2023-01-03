@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+    <title>Ram's News Portal</title>
+          
+	<style>
+		body {   
+						font-family: Tahoma;   
+						color: black;
+						background-color: #bbbbcc;
+		}
+		.article {   
+						border: 1px solid #bbbbdd;   
+						padding: 10px;   
+						border-radius: 8px;   
+						box-shadow: 3px 3px 10px;   
+						width: 100%;   
+						margin-bottom: 10px;
+						background-color: #bbbbcc;
+		}
+		.attribution {   
+						background: lightgray;   
+						padding: 5px;   
+						text-align: center;
+		}
+		.header {   
+						padding: 10px;   
+						width: 100%;   
+						background: #bbbbdd;   
+						color: white;   
+						display: inline-block;   
+						margin-top: 5px;   
+						margin-bottom: 10px;   
+						font-size: medium;   
+						font-weight: bold;
+		}
+		.url {   
+						font-size: small;   
+						color: cornflowerblue;
+		}
+		.source {   
+						font-size: small;   
+						color: lightslategray;
+		}
+		.category {   
+						border: 1px solid #bbbbdd;   
+						padding: 10px;   
+						box-shadow: 3px 3px 10px;   
+						margin-right: 10px;   
+						margin-bottom: 5px;   
+						float: left;
+						color: black;   
+						text-decoration: none;   
+						font-weight: bold;   
+						background-color: #888899;
+		}
+		.category a {   
+						color: black;   
+						text-decoration: none;   
+						font-weight: bold;   
+						padding-left: 10px;
+		}
+		.menu {   
+						margin-top: 10px;   
+						padding: 0px;
+		}
+	</style>
+            
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<script type="text/javascript">
+		var newsArticles = [];
+
+		function getNewsArticles(category)
+		{
+			const xhr = new XMLHttpRequest();
+
+			xhr.open('GET', 'http://<BACKEND_API_BASE_ADDRESS>/api/News?category=' + category + '&images=true');
+			xhr.send();
+
+			xhr.onload = function() {
+			  if (xhr.status === 200) {
+				//console.log(xhr.response);
+				newsArticles = xhr.response;
+				updateContent(JSON.parse(newsArticles));
+			  } else {
+				console.error(xhr.statusText);
+			  }
+			};
+
+			xhr.onerror = function() {
+			  console.error(xhr.statusText);
+			};
+		}
+		
+		function updateContent(articles) 
+		{
+			var htmlArticles = "";
+			articles.forEach(function (article) {
+				htmlArticles += "<div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 article\">" +
+								"<div class=\"col-xs-2 col-sm-2 col-md-1 col-lg-1\"> " +
+									"<img src=\"" + article.UrlToImage + "\" width=\"50px\" height=\"50px\" alt=\"..\" /> " +
+								"</div> " +
+								"<div class=\"col-xs-10 col-sm-10 col-md-11 col-lg-11\">" + article.Description + "</div> " +
+								"<div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">Source: <a href=\"" + article.Url + "\">" + article.Url + "</a></div> " +
+							"</div>";
+			});
+			
+			//console.log('html ....');
+			//console.log(htmlArticles);
+			
+			document.getElementById('newsArticles').innerHTML = "<div>" + htmlArticles + "</div>";
+		}
+	</script>
+
+  </head>
+  <body style="background-color: #666677">
+	<div class="container">
+
+		<div class="row" style="color: black; margin-bottom: 20px">
+		   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 menu">
+			  <div id="technology" class="col-xs-12 col-sm-6 col-md-3 col-lg-2 category" onclick="getNewsArticles('technology')">Technology</div>
+			  <div id="business" class="col-xs-12 col-sm-6 col-md-3 col-lg-2 category" onclick="getNewsArticles('business')">Business</div>
+			  <div id="science" class="col-xs-12 col-sm-6 col-md-3 col-lg-2 category" onclick="getNewsArticles('science')">Science</div>
+			  <div id="sports" class="col-xs-12 col-sm-6 col-md-3 col-lg-2 category" onclick="getNewsArticles('sports')">Sports</div>
+			  <div id="entertainment" class="col-xs-12 col-sm-6 col-md-3 col-lg-2 category" onclick="getNewsArticles('entertainment')">Entertainment</div>
+		   </div>
+		</div>
+
+		<div id="newsArticles"></div>
+
+		<div class="row"><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 attribution">Content source: <a href="https://newsapi.org">News API</a></div></div>
+	</div>
+  </body>
+</html>
+
